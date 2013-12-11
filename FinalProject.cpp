@@ -101,12 +101,10 @@ void printManual()
 void drawBoxArea(float size)
 {
 	glBegin(GL_QUADS);
-		glColor3f(0.20,0.80,0.65);
-
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, cp_amb);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, cp_dif);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, cp_spec);
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, cp_shiny);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, e_amb);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, e_dif);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, e_spec);
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, e_shiny);
 		//Left cube face
 		glNormal3d(-1, 0, 0);
 		glVertex3f(size, size, size*.5);
@@ -144,6 +142,10 @@ void drawBoxArea(float size)
 //Draws ball
 void drawBall()
 {
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, rp_amb);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, rp_dif);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, rp_spec);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, rp_shiny);
 	glPushMatrix();
 	//set ball position
 	//glTranslated(particleList[i].getPosition().x,particleList[i].getPosition().y,particleList[i].getPosition().z);
@@ -182,20 +184,6 @@ point3D fetchLocation(int x, int y)
 	gluUnProject(winX, winY, winZ, modelview, projection, viewport, &objX,&objY,&objZ);
 
 	return point3D(objX,objY,objZ);
-}
-
-
-
-void backfaceCulling(void)
-{
-	if(bfCulling == true)
-	{
-		glEnable(GL_CULL_FACE);
-	}
-	else
-	{
-		glDisable(GL_CULL_FACE);
-	}
 }
 
 //Handling keyboard input
@@ -237,9 +225,6 @@ void update(void)
 
 	GLfloat lightpos2[] = {lightsource2[0],lightsource2[1],lightsource2[2],lightsource2[3]};
 	glLightfv(GL_LIGHT1, GL_POSITION, lightpos2);
-
-	//backface culling update
-	backfaceCulling();
 }
 
 void camera (void)

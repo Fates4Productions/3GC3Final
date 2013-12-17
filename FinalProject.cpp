@@ -38,6 +38,12 @@ bool mouseActive;
 
 //Scene Rotation angle
 float sceneRotation[3];
+float sceneRotationMax = 5.00;
+
+//physics variables
+float gravityConstant = .00001;
+float dx = 0;
+float dy = 0;
 
 //Initial light source variable
 float lightsource1[4] = { 0.0, 0.0, 150.0, 1.0 };
@@ -45,6 +51,9 @@ float lightsource2[4] = { 0, -100.0, 110.0, 1.0 };
 
 //Initial ball size
 float ballSizeDefault = 15.0;
+
+//initial ball position
+float ballPosition[2] = { 0, 0 };
 
 //
 bool keyboardStates[256] = { false };
@@ -135,6 +144,7 @@ void drawBall()
 	glPushMatrix();
 	//set ball position
 	//glTranslated(particleList[i].getPosition().x,particleList[i].getPosition().y,particleList[i].getPosition().z);
+	glTranslatef(ballPosition[0], ballPosition[1], 0);
 	glPushMatrix();
 	//rotate ball
 	//glRotatef(particleList[i].getRotation().x,1,0,0);
@@ -148,6 +158,17 @@ void drawBall()
 	glutSolidSphere(ballSizeDefault, 30, 30);
 	glPopMatrix();
 	glPopMatrix();
+}
+
+void ballPhysics()
+{
+	float gx = -sin(sceneRotation[1]) * gravityConstant;
+	float gy = sin(sceneRotation[0]) * gravityConstant;
+	dx += gx;
+	dy += gy;
+	ballPosition[0] += dx;
+	ballPosition[1] += dy;
+
 }
 
 //Ray-casting to fetch 3D location from 2D coordinates
@@ -207,19 +228,31 @@ void update(void)
 {
 	if (keyboardStates[GLUT_KEY_LEFT])
 	{
+		if (sceneRotation[1] <= sceneRotationMax)
+		{
 		sceneRotation[1] += 0.005;
+		}
 	}
 	if (keyboardStates[GLUT_KEY_RIGHT])
 	{
-		sceneRotation[1] -= 0.005;
+		if (sceneRotation[1] >= -sceneRotationMax)
+		{
+			sceneRotation[1] -= 0.005;
+		}
 	}if (keyboardStates[GLUT_KEY_UP])
 	{
-		sceneRotation[0] += 0.005;
+		if (sceneRotation[0] <= sceneRotationMax)
+		{
+			sceneRotation[0] += 0.005;
+		}
 	}if (keyboardStates[GLUT_KEY_DOWN])
 	{
-		sceneRotation[0] -= 0.005;
+		if (sceneRotation[0] >= -sceneRotationMax)
+		{
+			sceneRotation[0] -= 0.005;
+		}
 	}
-
+	ballPhysics();
 	glutPostRedisplay();
 }
 

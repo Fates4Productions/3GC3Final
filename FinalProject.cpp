@@ -39,9 +39,9 @@ bool mouseActive;
 
 //Scene Rotation angle
 float sceneRotation[3];
-float sceneRotationMax = 5.00;
+float sceneRotationMax = 20.00;
 
-float boxSize = 200;
+float floorSize = 200;
 
 //physics variables
 float gravityConstant = .00003;
@@ -59,7 +59,7 @@ float ballSizeDefault = 15.0;
 int ballRenderQuality = 30;
 
 //initial ball position and rotation
-float ballPosition[2] = { 0, 0 };
+float ballPosition[2] = { -50, 50 };
 float ballRotation[2] = { 0, 0 };
 
 //
@@ -107,38 +107,14 @@ void printManual()
 }
 
 //Draws enclosed box
-void drawBoxArea(float size)
+void drawFloor(float size)
 {
 	glBegin(GL_QUADS);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, e_amb);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, e_dif);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, e_spec);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, e_shiny);
-	/*//Left cube face
-	glNormal3d(-1, 0, 0);
-	glVertex3f(size, size, size*0.25);
-	glVertex3f(size, -size, size*0.25);
-	glVertex3f(size, -size, 0);
-	glVertex3f(size, size, 0);
-	//Back cube face
-	glNormal3d(0, 1, 0);
-	glVertex3f(-size, -size, size*0.25);
-	glVertex3f(size, -size, size*0.25);
-	glVertex3f(size, -size, 0);
-	glVertex3f(-size, -size, 0);
-	//Right cube face
-	glNormal3d(1, 0, 0);
-	glVertex3f(-size, -size, size*0.25);
-	glVertex3f(-size, size, size*0.25);
-	glVertex3f(-size, size, 0);
-	glVertex3f(-size, -size, 0);
-	//Front cube face
-	glNormal3d(0, -1, 0);
-	glVertex3f(size, size, size*0.25);
-	glVertex3f(-size, size, size*0.25);
-	glVertex3f(-size, size, 0);
-	glVertex3f(size, size, 0);*/
-	//Bottom cube face
+	
 	glNormal3d(0, 0, 1);
 	glVertex3f(size, size, 0);
 	glVertex3f(-size, size, 0);
@@ -149,15 +125,21 @@ void drawBoxArea(float size)
 
 void designLevel(){
 	wallList.push_back(vector<walls>());
-	wallList[0].push_back(walls(point3D(-200,200,0),400,50, true));
-	wallList[0].push_back(walls(point3D(200,-200,0),400,50, false));
-	wallList[0].push_back(walls(point3D(-200,-200,0),400,50,true));
-	wallList[0].push_back(walls(point3D(-200,-200,0),400,50, false));
-	/*wallList[0].push_back(walls(point3D(
-	wallList[0].push_back(walls(point3D(
-	wallList[0].push_back(walls(point3D(
-	wallList[0].push_back(walls(point3D(
-	wallList[0].push_back(walls(point3D(*/
+	wallList[0].push_back(walls(point3D(-200, 200, 0), 400, 50, true));
+	wallList[0].push_back(walls(point3D(200, -200, 0), 400, 50, false));
+	wallList[0].push_back(walls(point3D(-200, -200, 0), 400, 50, true));
+	wallList[0].push_back(walls(point3D(-200, -200, 0), 400, 50, false));
+
+	wallList[0].push_back(walls(point3D(0, 0, 0), 200, 50, false));
+	wallList[0].push_back(walls(point3D(-150, 0, 0), 150, 50, true));
+	wallList[0].push_back(walls(point3D(-150, 50, 0), 150, 50, false));
+	wallList[0].push_back(walls(point3D(-150, -100, 0), 100, 50, false));
+	wallList[0].push_back(walls(point3D(0, -200, 0), 100, 50, false));
+	wallList[0].push_back(walls(point3D(0, 0, 0), 150, 50, true));
+	wallList[0].push_back(walls(point3D(150, -200, 0), 50, 50, false));
+	wallList[0].push_back(walls(point3D(150, -100, 0), 100, 50, false));
+	wallList[0].push_back(walls(point3D(150, -100, 0), 100, 50, false));
+	wallList[0].push_back(walls(point3D(50, 150, 0), 150, 50, true));
 }
 
 //Draws ball
@@ -216,75 +198,48 @@ void drawLevel()
 
 void checkCollisions()
 {
-	if (dx < 0 && ballPosition[0] + dx - ballSizeDefault< -boxSize)
-	{
-		dx = 0;
-		drotx = 0;
-		ballPosition[0] = -boxSize + ballSizeDefault;
-	}
-	else if (dx > 0 && ballPosition[0] + dx + ballSizeDefault> boxSize)
-	{
-		dx = 0;
-		drotx = 0;
-		ballPosition[0] = boxSize - ballSizeDefault;
-	}
-	if (dy < 0 && ballPosition[1] + dy - ballSizeDefault< -boxSize)
-	{
-		dy = 0;
-		droty = 0;
-		ballPosition[1] = -boxSize + ballSizeDefault;
-	}
-	else if (dy > 0 && ballPosition[1] + dy + ballSizeDefault> boxSize)
-	{
-		dy = 0;
-		droty = 0;
-		ballPosition[1] = boxSize - ballSizeDefault;
-	}
-	/*
-	for (int i = 0; i < wallList.length(); i++){
-		if (list[i].orientation = x)
-		{
-			if (ballPosition[1] + ballSizeDefault <list[i].y && ballPosition[1] + ballSizeDefault > -list[i].y)
+	
+	for (int i = 0; i < wallList[currentLevel].size(); i++){
+		
+			if (ballPosition[1] - ballSizeDefault <wallList[currentLevel][i].getBR().y && ballPosition[1] + ballSizeDefault > wallList[currentLevel][i].getBL().y)
 			{
-
-				if (dx < 0 && ballPosition[0] + dx - ballSizeDefault< list[i].x)
+				if (ballPosition[0] - ballSizeDefault>= wallList[currentLevel][i].getBL().x && ballPosition[0] + dx - ballSizeDefault<= wallList[currentLevel][i].getBL().x)
 				{
 					dx = 0;
 					drotx = 0;
-					ballPosition[0] = list[i].x + ballSizeDefault;
+					ballPosition[0] = wallList[currentLevel][i].getBL().x + ballSizeDefault;
 				}
-				else if (dx > 0 && ballPosition[0] + dx + ballSizeDefault> list[i].x)
+				else if (ballPosition[0] +  ballSizeDefault<= wallList[currentLevel][i].getBL().x && ballPosition[0] + dx + ballSizeDefault>= wallList[currentLevel][i].getBL().x)
 				{
 					dx = 0;
 					drotx = 0;
-					ballPosition[0] = list[i].x - ballSizeDefault;
+					ballPosition[0] = wallList[currentLevel][i].getBL().x - ballSizeDefault;
 				}
 			}
 
-		}
-		else if (list[i].orientation = y)
-		{
-			if (ballPosition[0] + ballSizeDefault <list[i].x && ballPosition[0] + ballSizeDefault > -list[i].x)
+		
+		
+			if (ballPosition[0] - ballSizeDefault <wallList[currentLevel][i].getBR().x && ballPosition[0] + ballSizeDefault > wallList[currentLevel][i].getBL().x)
 			{
 
-				if (dy < 0 && ballPosition[1] + dy - ballSizeDefault< list[i].y)
+				if (ballPosition[1] - ballSizeDefault>= wallList[currentLevel][i].getBL().y && ballPosition[1] + dy - ballSizeDefault<= wallList[currentLevel][i].getBL().y)
 				{
 					dy = 0;
 					droty = 0;
-					ballPosition[1] = list[i].y + ballSizeDefault;
+					ballPosition[1] = wallList[currentLevel][i].getBL().y + ballSizeDefault;
 				}
-				else if (dx > 0 && ballPosition[0] + dx + ballSizeDefault> list[i].y)
+				else if (ballPosition[1] + ballSizeDefault<= wallList[currentLevel][i].getBL().y && ballPosition[1] + dy + ballSizeDefault>= wallList[currentLevel][i].getBL().y)
 				{
 					dy = 0;
 					droty = 0;
-					ballPosition[1] = list[i].y - ballSizeDefault;
+					ballPosition[1] = wallList[currentLevel][i].getBL().y - ballSizeDefault;
 				}
 			}
 
-		}
+		
 
 	}
-	*/
+	
 
 }
 
@@ -450,7 +405,7 @@ void display(void)
 	glRotatef(sceneRotation[1], 0, 1, 0);
 
 	//Drawing of scene
-	drawBoxArea(boxSize);
+	drawFloor(floorSize);
 	//drawWalls();
 	//drawHoles();
 

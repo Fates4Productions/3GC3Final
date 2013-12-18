@@ -114,7 +114,7 @@ void drawBoxArea(float size)
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, e_dif);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, e_spec);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, e_shiny);
-	//Left cube face
+	/*//Left cube face
 	glNormal3d(-1, 0, 0);
 	glVertex3f(size, size, size*0.25);
 	glVertex3f(size, -size, size*0.25);
@@ -137,7 +137,7 @@ void drawBoxArea(float size)
 	glVertex3f(size, size, size*0.25);
 	glVertex3f(-size, size, size*0.25);
 	glVertex3f(-size, size, 0);
-	glVertex3f(size, size, 0);
+	glVertex3f(size, size, 0);*/
 	//Bottom cube face
 	glNormal3d(0, 0, 1);
 	glVertex3f(size, size, 0);
@@ -149,7 +149,15 @@ void drawBoxArea(float size)
 
 void designLevel(){
 	wallList.push_back(vector<walls>());
-	wallList[0].push_back(walls(point3D(0,0,0),10,10,true));
+	wallList[0].push_back(walls(point3D(-200,200,0),400,50, true));
+	wallList[0].push_back(walls(point3D(200,-200,0),400,50, false));
+	wallList[0].push_back(walls(point3D(-200,-200,0),400,50,true));
+	wallList[0].push_back(walls(point3D(-200,-200,0),400,50, false));
+	/*wallList[0].push_back(walls(point3D(
+	wallList[0].push_back(walls(point3D(
+	wallList[0].push_back(walls(point3D(
+	wallList[0].push_back(walls(point3D(
+	wallList[0].push_back(walls(point3D(*/
 }
 
 //Draws ball

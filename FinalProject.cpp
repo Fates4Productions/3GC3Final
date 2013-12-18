@@ -20,6 +20,7 @@ Student #: 1139649, 1156482
 #include "Math3DLib.h"
 #include "Particle.h"
 #include "TrigLib.h"
+#include "Walls.h"
 
 using namespace std;
 
@@ -92,8 +93,11 @@ float b_spec[] = { 0.0225, 0.0225, 0.0225, 1.0 };
 float b_emis[] = { 0.0, 0.0, 0.0, 1.0 };
 float b_shiny = 12.8;
 
+//level stuff
+int currentLevel = 0;
+
 //lists
-//std::vector< vector<wallClass> > wallList;
+vector< vector<walls> > wallList;
 //str::vector< <holeClass> > holeList;
 
 //Prints manual to console
@@ -144,7 +148,8 @@ void drawBoxArea(float size)
 }
 
 void designLevel(){
-	
+	wallList.push_back(vector<walls>());
+	wallList[0].push_back(walls(point3D(0,0,0),10,10,true));
 }
 
 //Draws ball
@@ -171,9 +176,20 @@ void drawBall()
 //Draws walls
 void drawWalls()
 {
+	for (int i = 0; i < wallList[currentLevel].size(); i++)
+	{
+		glBegin(GL_QUADS);
+		//material
+		
+			glVertex3f(wallList[currentLevel][i].getBL().x, wallList[currentLevel][i].getBL().y, wallList[currentLevel][i].getBL().z);
+			glVertex3f(wallList[currentLevel][i].getTL().x, wallList[currentLevel][i].getTL().y, wallList[currentLevel][i].getTL().z);
+			glVertex3f(wallList[currentLevel][i].getTR().x, wallList[currentLevel][i].getTR().y, wallList[currentLevel][i].getTR().z);
+			glVertex3f(wallList[currentLevel][i].getBR().x, wallList[currentLevel][i].getBR().y, wallList[currentLevel][i].getBR().z);
+		
 
 
-
+		glEnd();
+	}
 }
 
 //Draws holes

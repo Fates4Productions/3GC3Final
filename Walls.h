@@ -11,28 +11,23 @@
 #include <list>
 #include <string>
 
-using namespace std;
 
 class walls
 {
 
 private:
-
 	point3D tlPosition;
 	point3D trPosition;
 	point3D brPosition;
 	point3D blPosition;
 	float fSize;
 	float fHeight;
-	colour cColour;
-	string sMaterial;
 	bool bOrientation;
 
 public:
 	static std::list<walls> wallsList;
 
-	walls::walls();
-	walls::walls(point3D inblPoint, float inSize, float inHeight, colour inColour, string inMateral, bool inOrientation);
+	walls::walls(point3D inblPoint, float inSize, float inHeight, bool inOrientation);
 
 	//Set Functions
 	void setPosition(float x, float y, float z);
@@ -41,14 +36,13 @@ public:
 	void setHeight(float newHeight);
 	void setMaterial(string newMaterial);
 	void setOrientation(bool newOrientation);
-
+	          
 	//Getters
-	point3D getPosition();
-	colour getColour();
-	float getSize();
-	float getHeight();
-	string getMaterial();
+	point3D getBL();
+	point3D getTL();
+	point3D getBR();
+	point3D getTR();
 	bool getOrientation();
-}
+};
 
 #endif

@@ -1,13 +1,8 @@
 #include "Walls.h"
 
-static std::list<walls> wallsList;
+using namespace std;
 
-walls::walls()
-{
-
-}
-
-walls::walls(point3D inblPoint, float inSize, float inHeight, colour inColour, string inMateral, bool inOrientation)
+walls::walls(point3D inblPoint, float inSize, float inHeight, bool inOrientation)
 {
 	this->blPosition = inblPoint;
 	this->tlPosition = point3D(inblPoint.x, inblPoint.y, inblPoint.z + inHeight);
@@ -15,18 +10,16 @@ walls::walls(point3D inblPoint, float inSize, float inHeight, colour inColour, s
 	if(inOrientation) //walls along x
 	{
 		this->brPosition = point3D(inblPoint.x + inSize, inblPoint.y, inblPoint.z);
-		this->brPosition = point3D(inblPoint.x + inSize, inblPoint.y, inblPoint.z + inHeight);
+		this->trPosition = point3D(inblPoint.x + inSize, inblPoint.y, inblPoint.z + inHeight);
 	}
 	else //walls along y
 	{
 		this->brPosition = point3D(inblPoint.x, inblPoint.y + inSize, inblPoint.z);
-		this->brPosition = point3D(inblPoint.x, inblPoint.y + inSize, inblPoint.z + inHeight);
+		this->trPosition = point3D(inblPoint.x, inblPoint.y + inSize, inblPoint.z + inHeight);
 	}
 
 	this->fSize = inSize;
 	this->fHeight = inHeight;
-	this->cColour = inColour;
-	this->sMaterial = inMateral;
 	this->bOrientation = inOrientation;
 
 }
@@ -39,14 +32,7 @@ void walls::setPosition(float x, float y, float z)
 	this->blPosition.z = z;
 
 }
-void walls::setColour(float r, float g, float b)
-{
 
-	this->cColour.r = r;
-	this->cColour.g = g;
-	this->cColour.b = b;
-
-}
 void walls::setSize(float newSize)
 {
 
@@ -59,12 +45,7 @@ void walls::setHeight(float newHeight)
 	this->fHeight = newHeight;
 
 }
-void walls::setMaterial(string newMaterial)
-{
 
-	this->sMaterial = newMaterial;
-
-}
 void walls::setOrientation(bool newOrientation)
 {
 
@@ -73,35 +54,21 @@ void walls::setOrientation(bool newOrientation)
 }
 
 //Getters
-point3D walls::getPosition()
+point3D walls::getBL()
 {
-
 	return this->blPosition;
-
 }
-colour walls::getColour()
+point3D walls::getTL()
 {
-
-	return this->cColour;
-
-}
-float walls::getSize()
+	return this->tlPosition;
+}point3D walls::getBR()
 {
-
-	return this->fSize;
-
-}
-float walls::getHeight()
+	return this->brPosition;
+}point3D walls::getTR()
 {
-
-	return this->fHeight;
+	return this->trPosition;
 }
-string walls::getMaterial()
-{
 
-	return this->sMaterial;
-
-}
 bool walls::getOrientation()
 {
 

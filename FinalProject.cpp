@@ -92,6 +92,9 @@ float b_spec[] = { 0.0225, 0.0225, 0.0225, 1.0 };
 float b_emis[] = { 0.0, 0.0, 0.0, 1.0 };
 float b_shiny = 12.8;
 
+//lists
+//std::vector< vector<wallClass> > wallList;
+//str::vector< <holeClass> > holeList;
 
 //Prints manual to console
 void printManual()
@@ -140,6 +143,10 @@ void drawBoxArea(float size)
 	glEnd();
 }
 
+void designLevel(){
+	
+}
+
 //Draws ball
 void drawBall()
 {
@@ -159,6 +166,28 @@ void drawBall()
 	glutSolidSphere(ballSizeDefault, ballRenderQuality, ballRenderQuality);
 	glPopMatrix();
 	glPopMatrix();
+}
+
+//Draws walls
+void drawWalls()
+{
+
+
+
+}
+
+//Draws holes
+void drawHoles()
+{
+
+
+}
+
+//Draws level
+void drawLevel()
+{
+	drawWalls();
+	drawHoles();
 }
 
 void checkCollisions()
@@ -188,7 +217,7 @@ void checkCollisions()
 		ballPosition[1] = boxSize - ballSizeDefault;
 	}
 	/*
-	for (int i = 0; i < listsize; i++){
+	for (int i = 0; i < wallList.length(); i++){
 		if (list[i].orientation = x)
 		{
 			if (ballPosition[1] + ballSizeDefault <list[i].y && ballPosition[1] + ballSizeDefault > -list[i].y)
@@ -242,18 +271,21 @@ void ballPhysics()
 	float gy = -sind(sceneRotation[0]) * gravityConstant;
 	dx += gx;
 	dy += gy;
-	checkCollisions();
-	ballPosition[0] += dx;
-	ballPosition[1] += dy;
 
 	float rax = dx*dx / ballSizeDefault;
 	float ray = dy*dy / ballSizeDefault;
-
 	drotx += dx / (ballSizeDefault * 100);
 	droty += dy / (ballSizeDefault * 100);
+
+
+	checkCollisions();
+	
+
+	ballPosition[0] += dx;
+	ballPosition[1] += dy;
+
 	ballRotation[0] += drotx;
 	ballRotation[1] += droty;
-
 }
 
 //Ray-casting to fetch 3D location from 2D coordinates
@@ -400,6 +432,9 @@ void display(void)
 
 	//Draw ball
 	drawBall();
+	
+	//Draw levle
+	drawLevel();
 
 	//Double buffering
 	glutSwapBuffers();
@@ -444,6 +479,9 @@ int main(int argc, char** argv)
 
 	//initialize lighting
 	lighting();
+
+	//setup levels
+	designLevel();
 
 	//Registers display callback func & idle callback func
 	glutDisplayFunc(display);	//registers "display" as the display callback function

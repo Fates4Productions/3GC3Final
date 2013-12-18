@@ -40,10 +40,14 @@ bool mouseActive;
 float sceneRotation[3];
 float sceneRotationMax = 5.00;
 
+float boxSize = 200;
+
 //physics variables
-float gravityConstant = .00001;
+float gravityConstant = .00003;
 float dx = 0;
 float dy = 0;
+float drotx = 0;
+float droty = 0;
 
 //Initial light source variable
 float lightsource1[4] = { 0.0, 0.0, 150.0, 1.0 };
@@ -51,9 +55,11 @@ float lightsource2[4] = { 0, -100.0, 110.0, 1.0 };
 
 //Initial ball size
 float ballSizeDefault = 15.0;
+int ballRenderQuality = 30;
 
-//initial ball position
+//initial ball position and rotation
 float ballPosition[2] = { 0, 0 };
+float ballRotation[2] = { 0, 0 };
 
 //
 bool keyboardStates[256] = { false };
@@ -140,34 +146,113 @@ void drawBall()
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, r_amb);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, r_dif);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, r_spec);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, r_emis);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, r_shiny);
 	glPushMatrix();
-	//set ball position
-	//glTranslated(particleList[i].getPosition().x,particleList[i].getPosition().y,particleList[i].getPosition().z);
-	glTranslatef(ballPosition[0], ballPosition[1], 0);
+	glTranslatef(ballPosition[0], ballPosition[1], ballSizeDefault);
 	glPushMatrix();
 	//rotate ball
-	//glRotatef(particleList[i].getRotation().x,1,0,0);
-	//glRotatef(particleList[i].getRotation().y,0,1,0);
-	//glRotatef(particleList[i].getRotation().z,0,0,1);
-
-	//selects the particle material
-	//selectMaterial(particleList[i]);
+	glRotatef(ballRotation[0], 0, 1, 0);
+	glRotatef(ballRotation[1], -1, 0, 0);
 
 	//draws the ball
-	glutSolidSphere(ballSizeDefault, 30, 30);
+	glutSolidSphere(ballSizeDefault, ballRenderQuality, ballRenderQuality);
 	glPopMatrix();
 	glPopMatrix();
 }
 
+void checkCollisions()
+{
+	if (dx < 0 && ballPosition[0] + dx - ballSizeDefault< -boxSize)
+	{
+		dx = 0;
+		drotx = 0;
+		ballPosition[0] = -boxSize + ballSizeDefault;
+	}
+	else if (dx > 0 && ballPosition[0] + dx + ballSizeDefault> boxSize)
+	{
+		dx = 0;
+		drotx = 0;
+		ballPosition[0] = boxSize - ballSizeDefault;
+	}
+	if (dy < 0 && ballPosition[1] + dy - ballSizeDefault< -boxSize)
+	{
+		dy = 0;
+		droty = 0;
+		ballPosition[1] = -boxSize + ballSizeDefault;
+	}
+	else if (dy > 0 && ballPosition[1] + dy + ballSizeDefault> boxSize)
+	{
+		dy = 0;
+		droty = 0;
+		ballPosition[1] = boxSize - ballSizeDefault;
+	}
+	/*
+	for (int i = 0; i < listsize; i++){
+		if (list[i].orientation = x)
+		{
+			if (ballPosition[1] + ballSizeDefault <list[i].y && ballPosition[1] + ballSizeDefault > -list[i].y)
+			{
+
+				if (dx < 0 && ballPosition[0] + dx - ballSizeDefault< list[i].x)
+				{
+					dx = 0;
+					drotx = 0;
+					ballPosition[0] = list[i].x + ballSizeDefault;
+				}
+				else if (dx > 0 && ballPosition[0] + dx + ballSizeDefault> list[i].x)
+				{
+					dx = 0;
+					drotx = 0;
+					ballPosition[0] = list[i].x - ballSizeDefault;
+				}
+			}
+
+		}
+		else if (list[i].orientation = y)
+		{
+			if (ballPosition[0] + ballSizeDefault <list[i].x && ballPosition[0] + ballSizeDefault > -list[i].x)
+			{
+
+				if (dy < 0 && ballPosition[1] + dy - ballSizeDefault< list[i].y)
+				{
+					dy = 0;
+					droty = 0;
+					ballPosition[1] = list[i].y + ballSizeDefault;
+				}
+				else if (dx > 0 && ballPosition[0] + dx + ballSizeDefault> list[i].y)
+				{
+					dy = 0;
+					droty = 0;
+					ballPosition[1] = list[i].y - ballSizeDefault;
+				}
+			}
+
+		}
+
+	}
+	*/
+
+}
+
+
 void ballPhysics()
 {
-	float gx = -sin(sceneRotation[1]) * gravityConstant;
-	float gy = sin(sceneRotation[0]) * gravityConstant;
+	float gx = sind(sceneRotation[1]) * gravityConstant;
+	float gy = -sind(sceneRotation[0]) * gravityConstant;
 	dx += gx;
 	dy += gy;
+	checkCollisions();
 	ballPosition[0] += dx;
 	ballPosition[1] += dy;
+
+	float rax = dx*dx / ballSizeDefault;
+	float ray = dy*dy / ballSizeDefault;
+
+	drotx += dx / (ballSizeDefault * 100);
+	droty += dy / (ballSizeDefault * 100);
+	ballRotation[0] += drotx;
+	ballRotation[1] += droty;
 
 }
 
@@ -230,7 +315,7 @@ void update(void)
 	{
 		if (sceneRotation[1] <= sceneRotationMax)
 		{
-		sceneRotation[1] += 0.005;
+			sceneRotation[1] += 0.005;
 		}
 	}
 	if (keyboardStates[GLUT_KEY_RIGHT])
@@ -309,7 +394,7 @@ void display(void)
 	glRotatef(sceneRotation[1], 0, 1, 0);
 
 	//Drawing of scene
-	drawBoxArea(200);
+	drawBoxArea(boxSize);
 	//drawWalls();
 	//drawHoles();
 

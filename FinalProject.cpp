@@ -21,6 +21,7 @@ Student #: 1139649, 1156482
 #include "Particle.h"
 #include "TrigLib.h"
 #include "Walls.h"
+#include "Hole.h"
 
 using namespace std;
 
@@ -40,11 +41,13 @@ bool mouseActive;
 //Scene Rotation angle
 float sceneRotation[3];
 float sceneRotationMax = 20.00;
+float rotationSpeed = 0.05;
 
 float floorSize = 200;
+float holeSize = floorSize/8;
 
 //physics variables
-float gravityConstant = .00003;
+float gravityConstant = .0003;
 float dx = 0;
 float dy = 0;
 float drotx = 0;
@@ -59,7 +62,7 @@ float ballSizeDefault = 15.0;
 int ballRenderQuality = 30;
 
 //initial ball position and rotation
-float ballPosition[2] = { -50, 50 };
+float ballPosition[2] = { 175, 175 };
 float ballRotation[2] = { 0, 0 };
 
 //
@@ -98,7 +101,7 @@ int currentLevel = 0;
 
 //lists
 vector< vector<walls> > wallList;
-//str::vector< <holeClass> > holeList;
+vector< vector<hole> >  holeList;
 
 //Prints manual to console
 void printManual()
@@ -109,12 +112,12 @@ void printManual()
 //Draws enclosed box
 void drawFloor(float size)
 {
-	glBegin(GL_QUADS);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, e_amb);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, e_dif);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, e_spec);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, e_emis);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, e_shiny);
-	
+	glBegin(GL_QUADS);	
 	glNormal3d(0, 0, 1);
 	glVertex3f(size, size, 0);
 	glVertex3f(-size, size, 0);
@@ -136,10 +139,15 @@ void designLevel(){
 	wallList[0].push_back(walls(point3D(-150, -100, 0), 100, 50, false));
 	wallList[0].push_back(walls(point3D(0, -200, 0), 100, 50, false));
 	wallList[0].push_back(walls(point3D(0, 0, 0), 150, 50, true));
-	wallList[0].push_back(walls(point3D(150, -200, 0), 50, 50, false));
+	//wallList[0].push_back(walls(point3D(150, -200, 0), 50, 50, false));
 	wallList[0].push_back(walls(point3D(150, -100, 0), 100, 50, false));
 	wallList[0].push_back(walls(point3D(150, -100, 0), 100, 50, false));
 	wallList[0].push_back(walls(point3D(50, 150, 0), 150, 50, true));
+
+	holeList.push_back(vector <hole>());
+	holeList[0].push_back(hole(0,0));
+	holeList[0].push_back(hole(50,0));
+
 }
 
 //Draws ball
@@ -166,6 +174,11 @@ void drawBall()
 //Draws walls
 void drawWalls()
 {
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, r_amb);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, r_dif);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, r_spec);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, r_emis);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, r_shiny);
 	for (int i = 0; i < wallList[currentLevel].size(); i++)
 	{
 		glBegin(GL_QUADS);
@@ -175,7 +188,6 @@ void drawWalls()
 			glVertex3f(wallList[currentLevel][i].getTL().x, wallList[currentLevel][i].getTL().y, wallList[currentLevel][i].getTL().z);
 			glVertex3f(wallList[currentLevel][i].getTR().x, wallList[currentLevel][i].getTR().y, wallList[currentLevel][i].getTR().z);
 			glVertex3f(wallList[currentLevel][i].getBR().x, wallList[currentLevel][i].getBR().y, wallList[currentLevel][i].getBR().z);
-		
 
 
 		glEnd();
@@ -185,7 +197,18 @@ void drawWalls()
 //Draws holes
 void drawHoles()
 {
-
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, b_amb);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, b_dif);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, b_spec);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, b_emis);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, b_shiny);
+	for (int i = 0; i < holeList[currentLevel].size(); i++)
+	{
+		glPushMatrix();
+		glTranslatef(holeList[currentLevel][i].x,holeList[currentLevel][i].y,holeList[currentLevel][i].z);
+		glutSolidCone(holeSize,1,30,1);		
+		glPopMatrix();		
+	}
 
 }
 
@@ -326,26 +349,26 @@ void update(void)
 	{
 		if (sceneRotation[1] <= sceneRotationMax)
 		{
-			sceneRotation[1] += 0.005;
+			sceneRotation[1] += rotationSpeed;
 		}
 	}
 	if (keyboardStates[GLUT_KEY_RIGHT])
 	{
 		if (sceneRotation[1] >= -sceneRotationMax)
 		{
-			sceneRotation[1] -= 0.005;
+			sceneRotation[1] -= rotationSpeed;
 		}
 	}if (keyboardStates[GLUT_KEY_UP])
 	{
 		if (sceneRotation[0] <= sceneRotationMax)
 		{
-			sceneRotation[0] += 0.005;
+			sceneRotation[0] += rotationSpeed;
 		}
 	}if (keyboardStates[GLUT_KEY_DOWN])
 	{
 		if (sceneRotation[0] >= -sceneRotationMax)
 		{
-			sceneRotation[0] -= 0.005;
+			sceneRotation[0] -= rotationSpeed;
 		}
 	}
 	ballPhysics();

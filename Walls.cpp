@@ -7,12 +7,12 @@ walls::walls(point3D inblPoint, float inSize, float inHeight, bool inOrientation
 	this->blPosition = inblPoint;
 	this->tlPosition = point3D(inblPoint.x, inblPoint.y, inblPoint.z + inHeight);
 
-	if(inOrientation) //walls along x
+	if(inOrientation) //walls along y
 	{
 		this->brPosition = point3D(inblPoint.x + inSize, inblPoint.y, inblPoint.z);
 		this->trPosition = point3D(inblPoint.x + inSize, inblPoint.y, inblPoint.z + inHeight);
 	}
-	else //walls along y
+	else //walls along x
 	{
 		this->brPosition = point3D(inblPoint.x, inblPoint.y + inSize, inblPoint.z);
 		this->trPosition = point3D(inblPoint.x, inblPoint.y + inSize, inblPoint.z + inHeight);

@@ -65,6 +65,9 @@ int ballRenderQuality = 30;
 float ballPosition[2] = { 175, 175 };
 float ballRotation[2] = { 0, 0 };
 
+//initial lives
+int lives = 3;
+
 //
 bool keyboardStates[256] = { false };
 
@@ -102,6 +105,8 @@ int currentLevel = 0;
 //lists
 vector< vector<walls> > wallList;
 vector< vector<hole> >  holeList;
+vector< vector<hole> > startPositionList;
+vector< vector<hole> > winPosition;
 
 //Prints manual to console
 void printManual()
@@ -176,9 +181,8 @@ void designLevel(){
 	wallList[2].push_back(walls(point3D(150,100,0), 100, 50, false));
 	wallList[2].push_back(walls(point3D(0,-50,0),200,50,false));
 
-
 	holeList.push_back(vector <hole>());
-	/*holeList[0].push_back(hole(25,25));
+	holeList[0].push_back(hole(25,25));
 	holeList[0].push_back(hole(175,125));
 	holeList[0].push_back(hole(175,-175));
 	holeList[0].push_back(hole(25,-175));
@@ -186,8 +190,14 @@ void designLevel(){
 	holeList[0].push_back(hole(-75,-175));
 	holeList[0].push_back(hole(-75,-175));
 	holeList[0].push_back(hole(-175,175));
-	holeList[0].push_back(hole(-25,25));*/
+	holeList[0].push_back(hole(-25,25));
 
+
+	startPositionList.push_back(vector <hole>());
+	startPositionList[0].push_back(hole(175, 175));
+
+	winPosition.push_back(vector <hole>());
+	winPosition[0].push_back(hole(-25,175));
 }
 
 //Draws ball
@@ -258,10 +268,27 @@ void drawLevel()
 	drawWalls();
 	drawHoles();
 }
+void nextLevel()
+{
 
+}
+void gameOver()
+{
+
+
+}
 void death()
 {
-	//god dammit chris ko
+	lives--;
+	if(lives>=0)
+	{
+		ballPosition[0];
+		ballPosition[1];
+	}
+	else
+	{
+		gameOver();
+	}
 }
 
 void checkCollisions()

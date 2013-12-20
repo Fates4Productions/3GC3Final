@@ -41,13 +41,13 @@ bool mouseActive;
 //Scene Rotation angle
 float sceneRotation[3];
 float sceneRotationMax = 20.00;
-float rotationSpeed = 0.05;
+float rotationSpeed = 0.1;
 
 float floorSize = 200;
 float holeSize = floorSize/8;
 
 //physics variables
-float gravityConstant = .0003;
+float gravityConstant = .003;
 float dx = 0;
 float dy = 0;
 float drotx = 0;
@@ -288,37 +288,32 @@ void nextLevel()
 	ballPosition[0] = startPositionList[currentLevel].x;
 	ballPosition[1] = startPositionList[currentLevel].y;
 	ballRotation[0] = 0;
-		ballRotation[1] = 0;
-		sceneRotation[0] = 0;
-		sceneRotation[1] = 0;
+	ballRotation[1] = 0;
+	sceneRotation[0] = 0;
+	sceneRotation[1] = 0;
+	dx = 0;
+	dy = 0;
 }
 void gameOver()
 {
 	currentLevel = 0;
 	lives = 3;
-	ballPosition[0] = startPositionList[currentLevel].x;
-	ballPosition[1] = startPositionList[currentLevel].y;
-	ballRotation[0] = 0;
-		ballRotation[1] = 0;
-		sceneRotation[0] = 0;
-		sceneRotation[1] = 0;
 }
 void death()
 {
 	lives--;
-	if(lives>=0)
-	{
-		ballPosition[0] = startPositionList[currentLevel].x;
-		ballPosition[1] = startPositionList[currentLevel].y;
-		ballRotation[0] = 0;
-		ballRotation[1] = 0;
-		sceneRotation[0] = 0;
-		sceneRotation[1] = 0;
-	}
-	else
+	if(lives=0)
 	{
 		gameOver();
 	}
+	ballPosition[0] = startPositionList[currentLevel].x;
+	ballPosition[1] = startPositionList[currentLevel].y;
+	ballRotation[0] = 0;
+	ballRotation[1] = 0;
+	sceneRotation[0] = 0;
+	sceneRotation[1] = 0;
+	dx = 0;
+	dy = 0;
 }
 
 void checkCollisions()
@@ -364,7 +359,7 @@ void checkCollisions()
 			death();
 		}
 	}
-	if(pow(ballPosition[0]-winPosition[currentLevel].x,2) + pow(ballPosition[1]-winPosition[currentLevel].y,2) <= pow(ballSizeDefault*0.5,2))
+	if(pow(ballPosition[0]-winPosition[currentLevel].x,2) + pow(ballPosition[1]-winPosition[currentLevel].y,2) <= pow(ballSizeDefault*0.7,2))
 	{
 		nextLevel();
 	}

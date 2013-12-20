@@ -105,8 +105,8 @@ int currentLevel = 0;
 //lists
 vector< vector<walls> > wallList;
 vector< vector<hole> >  holeList;
-vector< vector<hole> > startPositionList;
-vector< vector<hole> > winPosition;
+vector<hole> startPositionList;
+vector<hole> winPosition;
 
 //Prints manual to console
 void printManual()
@@ -154,7 +154,7 @@ void designLevel(){
 	wallList[1].push_back(walls(point3D(200, -200, 0), 400, 50, false));
 	wallList[1].push_back(walls(point3D(-200, -200, 0), 400, 50, true));
 	wallList[1].push_back(walls(point3D(-200, -200, 0), 400, 50, false));
-			 
+
 	wallList[1].push_back(walls(point3D(-200,100, 0), 150, 50, true));
 	wallList[1].push_back(walls(point3D(-150, 150, 0), 50, 50, false));
 	wallList[1].push_back(walls(point3D(-50,100,0), 55, 50, false));
@@ -171,7 +171,7 @@ void designLevel(){
 	wallList[2].push_back(walls(point3D(200, -200, 0), 400, 50, false));
 	wallList[2].push_back(walls(point3D(-200, -200, 0), 400, 50, true));
 	wallList[2].push_back(walls(point3D(-200, -200, 0), 400, 50, false));
-			 
+
 	wallList[2].push_back(walls(point3D(-150,-50,0), 350, 50, true));
 	wallList[2].push_back(walls(point3D(50,-200,0),100,50, false));
 	wallList[2].push_back(walls(point3D(-50,-200,0), 100, 50, false));
@@ -193,11 +193,9 @@ void designLevel(){
 	holeList[0].push_back(hole(-25,25));
 
 
-	startPositionList.push_back(vector <hole>());
-	startPositionList[0].push_back(hole(175, 175));
-
-	winPosition.push_back(vector <hole>());
-	winPosition[0].push_back(hole(-25,175));
+	//level 0
+	startPositionList.push_back(hole(175, 175));
+	winPosition.push_back(hole(-25,175));
 }
 
 //Draws ball
@@ -233,11 +231,11 @@ void drawWalls()
 	{
 		glBegin(GL_QUADS);
 		//material
-		
-			glVertex3f(wallList[currentLevel][i].getBL().x, wallList[currentLevel][i].getBL().y, wallList[currentLevel][i].getBL().z);
-			glVertex3f(wallList[currentLevel][i].getTL().x, wallList[currentLevel][i].getTL().y, wallList[currentLevel][i].getTL().z);
-			glVertex3f(wallList[currentLevel][i].getTR().x, wallList[currentLevel][i].getTR().y, wallList[currentLevel][i].getTR().z);
-			glVertex3f(wallList[currentLevel][i].getBR().x, wallList[currentLevel][i].getBR().y, wallList[currentLevel][i].getBR().z);
+
+		glVertex3f(wallList[currentLevel][i].getBL().x, wallList[currentLevel][i].getBL().y, wallList[currentLevel][i].getBL().z);
+		glVertex3f(wallList[currentLevel][i].getTL().x, wallList[currentLevel][i].getTL().y, wallList[currentLevel][i].getTL().z);
+		glVertex3f(wallList[currentLevel][i].getTR().x, wallList[currentLevel][i].getTR().y, wallList[currentLevel][i].getTR().z);
+		glVertex3f(wallList[currentLevel][i].getBR().x, wallList[currentLevel][i].getBR().y, wallList[currentLevel][i].getBR().z);
 
 
 		glEnd();
@@ -256,9 +254,21 @@ void drawHoles()
 	{
 		glPushMatrix();
 		glTranslatef(holeList[currentLevel][i].x,holeList[currentLevel][i].y,holeList[currentLevel][i].z);
-		glutSolidCone(holeSize,1,30,1);		
+		glutSolidCone(holeSize,0,30,1);		
 		glPopMatrix();		
 	}
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, r_amb);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, r_dif);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, r_spec);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, r_emis);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, r_shiny);
+
+		glPushMatrix();
+		glTranslatef(winPosition[currentLevel].x,winPosition[currentLevel].y,winPosition[currentLevel].z);
+		glutSolidTeapot(holeSize/3);		
+		glPopMatrix();		
+
 
 }
 
@@ -270,20 +280,40 @@ void drawLevel()
 }
 void nextLevel()
 {
-
+	currentLevel++;
+	if(currentLevel==3)
+	{
+		currentLevel = 0;
+	}
+	ballPosition[0] = startPositionList[currentLevel].x;
+	ballPosition[1] = startPositionList[currentLevel].y;
+	ballRotation[0] = 0;
+		ballRotation[1] = 0;
+		sceneRotation[0] = 0;
+		sceneRotation[1] = 0;
 }
 void gameOver()
 {
-
-
+	currentLevel = 0;
+	lives = 3;
+	ballPosition[0] = startPositionList[currentLevel].x;
+	ballPosition[1] = startPositionList[currentLevel].y;
+	ballRotation[0] = 0;
+		ballRotation[1] = 0;
+		sceneRotation[0] = 0;
+		sceneRotation[1] = 0;
 }
 void death()
 {
 	lives--;
 	if(lives>=0)
 	{
-		ballPosition[0];
-		ballPosition[1];
+		ballPosition[0] = startPositionList[currentLevel].x;
+		ballPosition[1] = startPositionList[currentLevel].y;
+		ballRotation[0] = 0;
+		ballRotation[1] = 0;
+		sceneRotation[0] = 0;
+		sceneRotation[1] = 0;
 	}
 	else
 	{
@@ -293,46 +323,50 @@ void death()
 
 void checkCollisions()
 {
-	
-	for (int i = 0; i < wallList[currentLevel].size(); i++){
-		
-			if (ballPosition[1] - ballSizeDefault <wallList[currentLevel][i].getBR().y && ballPosition[1] + ballSizeDefault > wallList[currentLevel][i].getBL().y)
-			{
-				if (ballPosition[0] - ballSizeDefault>= wallList[currentLevel][i].getBL().x && ballPosition[0] + dx - ballSizeDefault<= wallList[currentLevel][i].getBL().x)
-				{
-					dx = 0;
-					drotx = 0;
-					ballPosition[0] = wallList[currentLevel][i].getBL().x + ballSizeDefault;
-				}
-				else if (ballPosition[0] +  ballSizeDefault<= wallList[currentLevel][i].getBL().x && ballPosition[0] + dx + ballSizeDefault>= wallList[currentLevel][i].getBL().x)
-				{
-					dx = 0;
-					drotx = 0;
-					ballPosition[0] = wallList[currentLevel][i].getBL().x - ballSizeDefault;
-				}
-			}
-			if (ballPosition[0] - ballSizeDefault <wallList[currentLevel][i].getBR().x && ballPosition[0] + ballSizeDefault > wallList[currentLevel][i].getBL().x)
-			{
 
-				if (ballPosition[1] - ballSizeDefault>= wallList[currentLevel][i].getBL().y && ballPosition[1] + dy - ballSizeDefault<= wallList[currentLevel][i].getBL().y)
-				{
-					dy = 0;
-					droty = 0;
-					ballPosition[1] = wallList[currentLevel][i].getBL().y + ballSizeDefault;
-				}
-				else if (ballPosition[1] + ballSizeDefault<= wallList[currentLevel][i].getBL().y && ballPosition[1] + dy + ballSizeDefault>= wallList[currentLevel][i].getBL().y)
-				{
-					dy = 0;
-					droty = 0;
-					ballPosition[1] = wallList[currentLevel][i].getBL().y - ballSizeDefault;
-				}
+	for (int i = 0; i < wallList[currentLevel].size(); i++){
+
+		if (ballPosition[1] - ballSizeDefault <wallList[currentLevel][i].getBR().y && ballPosition[1] + ballSizeDefault > wallList[currentLevel][i].getBL().y)
+		{
+			if (ballPosition[0] - ballSizeDefault>= wallList[currentLevel][i].getBL().x && ballPosition[0] + dx - ballSizeDefault<= wallList[currentLevel][i].getBL().x)
+			{
+				dx = 0;
+				drotx = 0;
+				ballPosition[0] = wallList[currentLevel][i].getBL().x + ballSizeDefault;
 			}
+			else if (ballPosition[0] +  ballSizeDefault<= wallList[currentLevel][i].getBL().x && ballPosition[0] + dx + ballSizeDefault>= wallList[currentLevel][i].getBL().x)
+			{
+				dx = 0;
+				drotx = 0;
+				ballPosition[0] = wallList[currentLevel][i].getBL().x - ballSizeDefault;
+			}
+		}
+		if (ballPosition[0] - ballSizeDefault <wallList[currentLevel][i].getBR().x && ballPosition[0] + ballSizeDefault > wallList[currentLevel][i].getBL().x)
+		{
+
+			if (ballPosition[1] - ballSizeDefault>= wallList[currentLevel][i].getBL().y && ballPosition[1] + dy - ballSizeDefault<= wallList[currentLevel][i].getBL().y)
+			{
+				dy = 0;
+				droty = 0;
+				ballPosition[1] = wallList[currentLevel][i].getBL().y + ballSizeDefault;
+			}
+			else if (ballPosition[1] + ballSizeDefault<= wallList[currentLevel][i].getBL().y && ballPosition[1] + dy + ballSizeDefault>= wallList[currentLevel][i].getBL().y)
+			{
+				dy = 0;
+				droty = 0;
+				ballPosition[1] = wallList[currentLevel][i].getBL().y - ballSizeDefault;
+			}
+		}
 	}
 	for (int i = 0; i < holeList[currentLevel].size(); i++){
 		if(pow(ballPosition[0]-holeList[currentLevel][i].x,2) + pow(ballPosition[1]-holeList[currentLevel][i].y,2) <= pow(ballSizeDefault*0.9,2))
 		{
 			death();
 		}
+	}
+	if(pow(ballPosition[0]-winPosition[currentLevel].x,2) + pow(ballPosition[1]-winPosition[currentLevel].y,2) <= pow(ballSizeDefault*0.5,2))
+	{
+		nextLevel();
 	}
 
 }
@@ -352,7 +386,7 @@ void ballPhysics()
 
 
 	checkCollisions();
-	
+
 
 	ballPosition[0] += dx;
 	ballPosition[1] += dy;
@@ -505,8 +539,8 @@ void display(void)
 
 	//Draw ball
 	drawBall();
-	
-	//Draw levle
+
+	//Draw level
 	drawLevel();
 
 	//Double buffering

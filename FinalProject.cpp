@@ -82,21 +82,24 @@ float spec[4] = { 1, 1, 1, 0 };
 float e_amb[] = { 0.0215, 0.1745, 0.0215, 0.55 };
 float e_dif[] = { 0.07568, 0.61424, 0.07568, 0.55 };
 float e_spec[] = { 0.633, 0.727811, 0.633, 0.55 };
-float e_emis[] = { 0.0, 0.0, 0.0, 0.0 };
 float e_shiny = 76.8;
 
 //Ruby
 float r_amb[] = { 0.1745, 0.01175, 0.01175, 0.55 };
 float r_dif[] = { 0.61424, 0.04136, 0.04136, 0.55 };
 float r_spec[] = { 0.727811, 0.626959, 0.626959, 0.55 };
-float r_emis[] = { 0.0, 0.0, 0.0, 0.0 };
 float r_shiny = 76.8;
+
+//Polished Bronze
+float pb_amb[] = {0.25    ,     0.148 ,       0.06475   ,   1.0};
+float pb_dif[] = {0.4       ,   0.2368    ,   0.1036    ,   1.0};
+float pb_spec[] ={0.774597   ,  0.458561   ,  0.200621  ,   1.0};
+float pb_shiny =76.8;
 
 //Black
 float b_amb[] = { 0.0, 0.0, 0.0, 1.0 };
 float b_dif[] = { 0.0, 0.0, 0.0, 1.0 };
 float b_spec[] = { 0.0225, 0.0225, 0.0225, 1.0 };
-float b_emis[] = { 0.0, 0.0, 0.0, 1.0 };
 float b_shiny = 12.8;
 
 //level stuff
@@ -120,7 +123,6 @@ void drawFloor(float size)
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, e_amb);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, e_dif);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, e_spec);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, e_emis);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, e_shiny);
 	glBegin(GL_QUADS);	
 	glNormal3d(0, 0, 1);
@@ -130,6 +132,8 @@ void drawFloor(float size)
 	glVertex3f(size, -size, 0);
 	glEnd();
 }
+
+
 
 void designLevel(){
 	wallList.push_back(vector<walls>());
@@ -162,7 +166,7 @@ void designLevel(){
 	wallList[1].push_back(walls(point3D(-100,0,0), 100, 50, true));
 	wallList[1].push_back(walls(point3D(-200,0,0), 50, 50, true));
 	wallList[1].push_back(walls(point3D(-100,-150,0), 150, 50, false));
-	wallList[1].push_back(walls(point3D(-200,-175,0), 50, 50, true));
+	wallList[1].push_back(walls(point3D(-200,-150,0), 50, 50, true));
 	wallList[1].push_back(walls(point3D(150,-150,0),350, 50, false));
 	wallList[1].push_back(walls(point3D(100,-200,0),350,50,false));
 
@@ -192,11 +196,42 @@ void designLevel(){
 	holeList[0].push_back(hole(-175,175));
 	holeList[0].push_back(hole(-25,25));
 
+	holeList.push_back(vector <hole>());
+	holeList[1].push_back(hole(-75, 75));
+	holeList[1].push_back(hole(-75, 125));
+	holeList[1].push_back(hole(25, 125));
+	holeList[1].push_back(hole(-175, -25));
+	holeList[1].push_back(hole(-175, 25));
+	holeList[1].push_back(hole(-175, -125));
+	holeList[1].push_back(hole(25, -125));
+	holeList[1].push_back(hole(-25, -125));
+	holeList[1].push_back(hole(25, -75));
+	holeList[1].push_back(hole(75, 25));
 
-	//level 0
-	startPositionList.push_back(hole(175, 175));
+	holeList.push_back(vector <hole>());
+	holeList[2].push_back(hole(175,-25));
+	holeList[2].push_back(hole(125,25));
+	holeList[2].push_back(hole(75,125));
+	holeList[2].push_back(hole(-25,125));
+	holeList[2].push_back(hole(-75, 25));
+	holeList[2].push_back(hole(-125, 175));
+	holeList[2].push_back(hole(-125, -125));
+	holeList[2].push_back(hole(25, -125));
+	holeList[2].push_back(hole(75, -125));
+	holeList[2].push_back(hole(75, -175));
+	holeList[2].push_back(hole(125, -175));
+	holeList[2].push_back(hole(175, -175));
+	holeList[2].push_back(hole(175, -125));
+
+	startPositionList.push_back(hole(-50, 175));
+	startPositionList.push_back(hole(-175, 175));
+	startPositionList.push_back(hole(-175, 175));
+
 	winPosition.push_back(hole(-25,175));
+	winPosition.push_back(hole(175,175));
+	winPosition.push_back(hole(175,-175));
 }
+
 
 //Draws ball
 void drawBall()
@@ -204,7 +239,6 @@ void drawBall()
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, r_amb);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, r_dif);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, r_spec);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, r_emis);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, r_shiny);
 	glPushMatrix();
 	glTranslatef(ballPosition[0], ballPosition[1], ballSizeDefault);
@@ -222,11 +256,10 @@ void drawBall()
 //Draws walls
 void drawWalls()
 {
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, r_amb);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, r_dif);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, r_spec);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, r_emis);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, r_shiny);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pb_amb);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pb_dif);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, pb_spec);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, pb_shiny);
 	for (int i = 0; i < wallList[currentLevel].size(); i++)
 	{
 		glBegin(GL_QUADS);
@@ -248,7 +281,6 @@ void drawHoles()
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, b_amb);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, b_dif);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, b_spec);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, b_emis);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, b_shiny);
 	for (int i = 0; i < holeList[currentLevel].size(); i++)
 	{
@@ -258,30 +290,24 @@ void drawHoles()
 		glPopMatrix();		
 	}
 
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, r_amb);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, r_dif);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, r_spec);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, r_emis);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, r_shiny);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pb_amb);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pb_dif);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, pb_spec);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, pb_shiny);
 
-		glPushMatrix();
-		glTranslatef(winPosition[currentLevel].x,winPosition[currentLevel].y,winPosition[currentLevel].z);
-		glutSolidTeapot(holeSize/3);		
-		glPopMatrix();		
+	glPushMatrix();
+	glTranslatef(winPosition[currentLevel].x,winPosition[currentLevel].y,winPosition[currentLevel].z);
+	glutSolidTeapot(holeSize/3);		
+	glPopMatrix();		
 
 
 }
 
-//Draws level
-void drawLevel()
-{
-	drawWalls();
-	drawHoles();
-}
+
 void nextLevel()
 {
 	currentLevel++;
-	if(currentLevel==3)
+	if(currentLevel==wallList.size())
 	{
 		currentLevel = 0;
 	}
@@ -302,7 +328,7 @@ void gameOver()
 void death()
 {
 	lives--;
-	if(lives=0)
+	if(lives==0)
 	{
 		gameOver();
 	}
@@ -506,12 +532,55 @@ void lighting(void)
 	glShadeModel(GL_SMOOTH);
 }
 
+void disableLighting()
+{
+	glDisable(GL_LIGHTING);
+}
+void displayText()
+{
+	glColor3f(0.0, 1.0, 0.0); // Green
+
+	void * font = GLUT_BITMAP_9_BY_15;
+	string s = "";
+
+	glRasterPos2i(10, screenSize[1]-15);
+	s = "Current Level: "+to_string(currentLevel)+"                              Lives: "+to_string(lives);
+	for (string::iterator i = s.begin(); i != s.end(); ++i)
+	{
+		char c = *i;
+		glutBitmapCharacter(font, c);
+	}
+}
+
+void displayRotation()
+{
+
+	glColor3f(1,0,0);
+	glPointSize(15);
+	glBegin(GL_POINTS);
+	glVertex2f(-sceneRotation[1]/sceneRotationMax*50+screenSize[0]-100,sceneRotation[0]/sceneRotationMax*50+screenSize[1]-100);
+	glEnd();
+
+	glColor3f(0.678,.847,0.902);
+	glBegin(GL_QUADS);
+	glVertex2f(screenSize[0]-150,screenSize[1]-150);
+	glVertex2f(screenSize[0]-150,screenSize[1]-50);
+	glVertex2f(screenSize[0]-50,screenSize[1]-50);
+	glVertex2f(screenSize[0]-50,screenSize[1]-150);
+	glEnd();
+}
+
 //Main display function
 void display(void)
 {
+	//Enables depth test for proper z buffering
+	glEnable(GL_DEPTH_TEST);
+	lighting();
+
 	//Clear the buffers and clears glMatrix
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity(); // Load the Identity Matrix to reset our drawing locations
+
 
 	//Sets up projection view
 	glMatrixMode(GL_PROJECTION);
@@ -529,14 +598,29 @@ void display(void)
 
 	//Drawing of scene
 	drawFloor(floorSize);
-	//drawWalls();
-	//drawHoles();
+	drawWalls();
+	drawHoles();
 
 	//Draw ball
 	drawBall();
 
-	//Draw level
-	drawLevel();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, screenSize[0], 0.0, screenSize[1]);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	disableLighting();
+
+	displayText();
+	displayRotation();
+
+	glPopMatrix();
+	glPopMatrix();
 
 	//Double buffering
 	glutSwapBuffers();
@@ -571,16 +655,10 @@ int main(int argc, char** argv)
 	glutSpecialUpFunc(SpecialKeyUp);
 	glutMouseFunc(MouseClick);
 
-	//Enables depth test for proper z buffering
-	glEnable(GL_DEPTH_TEST);
-
 	//Enables backculling
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
 	//glEnable(GL_CULL_FACE);
-
-	//initialize lighting
-	lighting();
 
 	//setup levels
 	designLevel();

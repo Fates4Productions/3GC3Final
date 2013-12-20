@@ -144,8 +144,41 @@ void designLevel(){
 	wallList[0].push_back(walls(point3D(150, -100, 0), 100, 50, false));
 	wallList[0].push_back(walls(point3D(50, 150, 0), 150, 50, true));
 
+	wallList.push_back(vector<walls>());
+	wallList[1].push_back(walls(point3D(-200, 200, 0), 400, 50, true));
+	wallList[1].push_back(walls(point3D(200, -200, 0), 400, 50, false));
+	wallList[1].push_back(walls(point3D(-200, -200, 0), 400, 50, true));
+	wallList[1].push_back(walls(point3D(-200, -200, 0), 400, 50, false));
+			 
+	wallList[1].push_back(walls(point3D(-200,100, 0), 150, 50, true));
+	wallList[1].push_back(walls(point3D(-150, 150, 0), 50, 50, false));
+	wallList[1].push_back(walls(point3D(-50,100,0), 55, 50, false));
+	wallList[1].push_back(walls(point3D(0,0,0), 200, 50, false));
+	wallList[1].push_back(walls(point3D(-100,0,0), 100, 50, true));
+	wallList[1].push_back(walls(point3D(-200,0,0), 50, 50, true));
+	wallList[1].push_back(walls(point3D(-100,-150,0), 150, 50, false));
+	wallList[1].push_back(walls(point3D(-200,-175,0), 50, 50, true));
+	wallList[1].push_back(walls(point3D(150,-150,0),350, 50, false));
+	wallList[1].push_back(walls(point3D(100,-200,0),350,50,false));
+
+	wallList.push_back(vector<walls>());
+	wallList[2].push_back(walls(point3D(-200, 200, 0), 400, 50, true));
+	wallList[2].push_back(walls(point3D(200, -200, 0), 400, 50, false));
+	wallList[2].push_back(walls(point3D(-200, -200, 0), 400, 50, true));
+	wallList[2].push_back(walls(point3D(-200, -200, 0), 400, 50, false));
+			 
+	wallList[2].push_back(walls(point3D(-150,-50,0), 350, 50, true));
+	wallList[2].push_back(walls(point3D(50,-200,0),100,50, false));
+	wallList[2].push_back(walls(point3D(-50,-200,0), 100, 50, false));
+	wallList[2].push_back(walls(point3D(-150,-50,0), 100, 50, false));
+	wallList[2].push_back(walls(point3D(-150,150,0),50,50,false));
+	wallList[2].push_back(walls(point3D(-100,100,0), 100, 50, false));
+	wallList[2].push_back(walls(point3D(150,100,0), 100, 50, false));
+	wallList[2].push_back(walls(point3D(0,-50,0),200,50,false));
+
+
 	holeList.push_back(vector <hole>());
-	holeList[0].push_back(hole(25,25));
+	/*holeList[0].push_back(hole(25,25));
 	holeList[0].push_back(hole(175,125));
 	holeList[0].push_back(hole(175,-175));
 	holeList[0].push_back(hole(25,-175));
@@ -153,7 +186,7 @@ void designLevel(){
 	holeList[0].push_back(hole(-75,-175));
 	holeList[0].push_back(hole(-75,-175));
 	holeList[0].push_back(hole(-175,175));
-	holeList[0].push_back(hole(-25,25));
+	holeList[0].push_back(hole(-25,25));*/
 
 }
 

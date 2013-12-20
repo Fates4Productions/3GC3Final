@@ -145,8 +145,15 @@ void designLevel(){
 	wallList[0].push_back(walls(point3D(50, 150, 0), 150, 50, true));
 
 	holeList.push_back(vector <hole>());
-	holeList[0].push_back(hole(0,0));
-	holeList[0].push_back(hole(50,0));
+	holeList[0].push_back(hole(25,25));
+	holeList[0].push_back(hole(175,125));
+	holeList[0].push_back(hole(175,-175));
+	holeList[0].push_back(hole(25,-175));
+	holeList[0].push_back(hole(25,-125));
+	holeList[0].push_back(hole(-75,-175));
+	holeList[0].push_back(hole(-75,-175));
+	holeList[0].push_back(hole(-175,175));
+	holeList[0].push_back(hole(-25,25));
 
 }
 
@@ -219,6 +226,11 @@ void drawLevel()
 	drawHoles();
 }
 
+void death()
+{
+	//god dammit chris ko
+}
+
 void checkCollisions()
 {
 	
@@ -239,9 +251,6 @@ void checkCollisions()
 					ballPosition[0] = wallList[currentLevel][i].getBL().x - ballSizeDefault;
 				}
 			}
-
-		
-		
 			if (ballPosition[0] - ballSizeDefault <wallList[currentLevel][i].getBR().x && ballPosition[0] + ballSizeDefault > wallList[currentLevel][i].getBL().x)
 			{
 
@@ -258,11 +267,13 @@ void checkCollisions()
 					ballPosition[1] = wallList[currentLevel][i].getBL().y - ballSizeDefault;
 				}
 			}
-
-		
-
 	}
-	
+	for (int i = 0; i < holeList[currentLevel].size(); i++){
+		if(pow(ballPosition[0]-holeList[currentLevel][i].x,2) + pow(ballPosition[1]-holeList[currentLevel][i].y,2) <= pow(ballSizeDefault*0.9,2))
+		{
+			death();
+		}
+	}
 
 }
 
